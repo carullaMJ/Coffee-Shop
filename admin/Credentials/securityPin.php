@@ -11,21 +11,27 @@
 
 <?php 
 include('../dbcheck/dbCheck.php');
+$errorMsg = array ('pin' => '');
 if(isset($_POST['confirm'])) {
     $pin = htmlspecialchars($_POST['pin1']) . htmlspecialchars($_POST['pin2']) . htmlspecialchars($_POST['pin3']) . htmlspecialchars($_POST['pin4']);
-    $name = $_SESSION['name']; 
-    $userName = $_SESSION['newUsername'];
-    $activeEmail = $_SESSION['activeEmail']; 
-    $newPassword = $_SESSION['newPassword'];
-    $position = $_SESSION['position'];
+    if (!preg_match('^\d{4}$', htmlspecialchars($pin))) {
+        $errorMsg['pin'] = "Pin is a 4-digit NUMBER";
+    } else {
+        $safePin = mysqli_real_escape_string($connect, $pin);
+        $name = $_SESSION['name']; 
+        $userName = $_SESSION['newUsername'];
+        $activeEmail = $_SESSION['activeEmail']; 
+        $newPassword = $_SESSION['newPassword'];
+        $position = $_SESSION['position'];
 
-    $sql= "INSERT INTO accounts(name, username, e_mail, password, position, pin) VALUES ('$name', '$userName', '$activeEmail', '$newPassword', '$position', '$pin')";
-    if(mysqli_query($connect,$sql)) {
+        $sql= "INSERT INTO accounts(name, username, e_mail, password, position, pin) VALUES ('$name', '$userName', '$activeEmail', '$newPassword', '$position', '$safePin')";
+        if(mysqli_query($connect,$sql)) {
         //header("Location: accountPage.php");
         //exit();
-    }
-    else {
+        } else {
         echo "query_error:".mysqli_error($connect);
+        }
     }
+    
 }
 ?>
