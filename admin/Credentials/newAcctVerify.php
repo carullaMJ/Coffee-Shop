@@ -138,23 +138,7 @@ $newUsername = $firstName = $lastName = $name = $activeEmail = $newPassword = $c
                     echo "query_error:".mysqli_error($connect);
                 }
             }
-    
-            // Inserting filtered data into the table
-            /*$sql = "SELECT MAX(accountId) as highest FROM accounts WHERE position == '$position'";
-                $result = mysqli_query($connect, $sql);
-                $searchResult = mysqli_num_rows($result);
-                    $row = $result->fetch_assoc();
-                    if($row['highest'] > 9) {
-                        $positionEXT = $positionEXT."0".$row['highest'];
-                    } elseif ($row['highest'] == 0 || $row['highest'] < 10) {
-                        $positionEXT = $positionEXT."00".$row['highest'];
-                    }
-                    $sql= "INSERT INTO accounts(acctUniqueID, name, username, e_mail, password, position) VALUES ($positionEXT, $name, $newUsername, $activeEmail, $encPassword, $position)"; */
-    
-    
-    
         }
-        
      }
         
 

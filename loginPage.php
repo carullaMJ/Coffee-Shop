@@ -4,7 +4,7 @@ include('LoginCheck/logCredential.php');
             <form action="index.php" method="post" style="background-color: #FED8B1;">
                 <p class="display-2 text-center fw-light card-title" id="signIn_title">Sign In</p>
                 <div style="width: 100%; height: 10px;">
-                    <p style="font-size: 10px; color: red;"><?php echo $errorMsg['username'] ?></p>
+                    <p style="font-size: 15px; color: red; text-align: center;"><?php echo $errorMsg['alert'] ?></p>
                 </div>
                 <div class="card-body mx-3">
                     <p class="fw-light card-text" id="label">Username</p>

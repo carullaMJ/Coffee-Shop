@@ -1,6 +1,9 @@
 <?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 include('dbcheck/dbCheck.php');
-$errorMsg = array ('username' => '', 'password' => '', 'position' => '');
+$errorMsg = array ('username' => '', 'password' => '', 'position' => '', 'alert' => '');
 $logInUsername = $logInPassword = $logInPosition = '';
 if (isset($_POST['login'])) {
     if(empty($_POST['logInUsername'])) {
@@ -35,7 +38,7 @@ if (isset($_POST['login'])) {
     if(array_filter($errorMsg)) {
 
         //Alerts if there are error is the form and the errorMsg array has any values
-        echo "<script>alert('There is still some error/s in the form, please try again!')</script>";
+        $errorMsg['alert'] = "**There are still error/s in the form, try again**";
     } else {
         
         //Filtration of data before checking if there is an account existing in the table
@@ -49,8 +52,30 @@ if (isset($_POST['login'])) {
         //Position
         $safePosition = mysqli_real_escape_string($connect, $logInPosition);
 
-        $sql = "SELECT * FROM accounts WHERE ";
-    }
+        //connecting to the table and finding the user
+        $pos = "SELECT * FROM accounts WHERE username = '$safeUsername' AND position = '$safePosition'";
+        $query = mysqli_query($connect, $pos);
+        $hashed_password = mysqli_fetch_assoc($query);
+        $searchResult = mysqli_num_rows($query);
+        if ($searchResult > 0) {
+            if(!password_verify($safePass, $hashed_password['password'])) {
+                $errorMsg['password'] = "Incorrect Password!";
+            } else {
+                $sql = "SELECT * FROM accounts WHERE username = '$safeUsername' AND = '$safePosition'";
+                $query = $connect->query($sql) or die($connect->error);
+                $res =$query->fetch_assoc();
+                
+                if($safePosition == 'Admin') {
+                    $_SESSION['username'] = $safeUsername;
+                    $_SESSION['position'] = $safePosition;
+                    include('adminAccountVerify.php');
+                }
+            }
+        } else {
+            $errorMsg['alert'] = "**User not Found!**";
+        }
+        
+     }
 
 
 }

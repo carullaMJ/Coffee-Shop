@@ -1,4 +1,4 @@
-<form action="AccountPage.php" method="post">
+<form action="index.php" method="post">
     <div class="input">
         <input type="password" class="pin-input" name="pin1" maxlength="1">
         <input type="password" class="pin-input" name="pin2" maxlength="1">
@@ -15,22 +15,20 @@ $errorMsg = array ('pin' => '');
 if(isset($_POST['confirm'])) {
     $pin = htmlspecialchars($_POST['pin1']) . htmlspecialchars($_POST['pin2']) . htmlspecialchars($_POST['pin3']) . htmlspecialchars($_POST['pin4']);
     if (!preg_match('^\d{4}$', htmlspecialchars($pin))) {
-        echo "<script>togglePin()</script>";
         $errorMsg['pin'] = "Pin is a 4-digit NUMBER";
-        echo "console.log('hello')";
     } else {
-        $name = $_SESSION['name']; 
-        $userName = $_SESSION['newUsername'];
-        $activeEmail = $_SESSION['activeEmail']; 
-        $newPassword = $_SESSION['newPassword'];
-        $position = $_SESSION['position'];
+        $safeUsername = $_SESSION['username'];
+        $safePosition = $_SESSION['position'];
+        $sql = "SELECT * FROM accounts WHERE username = '$safeUsername' AND position = '$safePosition'";
+        $query = $connect->query($sql) or die($connect->error);
+        $res =$query->fetch_assoc();
+        if($res['pin'] != $pin) {
+            $errorMsg['pin'] = "Incorrect PIN";
+        }
+        else {
+            $_SESSION['login'] = $res['accountId'];
+            echo "Logged In";
 
-        $sql= "INSERT INTO accounts(name, username, e_mail, password, position, pin) VALUES ('$name', '$userName', '$activeEmail', '$newPassword', '$position', '$pin')";
-        if(mysqli_query($connect,$sql)) {
-        //header("Location: accountPage.php");
-        //exit();
-        } else {
-        echo "query_error:".mysqli_error($connect);
         }
     }
     
