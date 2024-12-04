@@ -62,13 +62,17 @@ if (isset($_POST['login'])) {
                 $errorMsg['password'] = "Incorrect Password!";
             } else {
                 $sql = "SELECT * FROM accounts WHERE username = '$safeUsername' AND = '$safePosition'";
-                $query = $connect->query($sql) or die($connect->error);
-                $res =$query->fetch_assoc();
+                $query = mysqli_query($connect, $pos);
+                $res =mysqli_fetch_assoc($query);
                 
                 if($safePosition == 'Admin') {
                     $_SESSION['username'] = $safeUsername;
                     $_SESSION['position'] = $safePosition;
-                    include('adminAccountVerify.php');
+                    echo "<script>floatingPin()</script>";
+                } else {
+                    $_SESSION['login'] = $res['accountId'];
+                    echo "Logged In";
+
                 }
             }
         } else {

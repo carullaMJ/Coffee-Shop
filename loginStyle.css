@@ -71,6 +71,9 @@
 }
 
 /* Floating pin */
+.pin-overlay {
+    display: none;
+}
 
 .floating-pin {
     width: 400px;

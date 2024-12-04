@@ -63,14 +63,6 @@
         
                 </div>
             </div>
-            <div class="pin-overlay" id="pinOverlay">
-                <div class="floating-pin" id="floatingPin" style="width: 25rem; margin: auto;">
-                    <h3 class="card-title">Security PIN</h3>
-
-                    <?php include('Credentials/securityPin.php'); // Include the floating form from form.php ?>
-        
-                </div>
-            </div>
     </div>
     <script src="../JS/script.js"></script>
     <?php 

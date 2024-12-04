@@ -24,7 +24,7 @@ include ('Credentials/newAcctVerify.php')
     <div>
         <p><?php echo $errorMessage['newPassword']; ?></p><!--new Password-->
     </div>
-    <select name="position">
+    <select name="position" id="accountPosition">
         <option value="selectPosition">Position</option>
         <option value="cashier">Cashier</option>
         <option value="admin">Admin</option>
@@ -36,6 +36,17 @@ include ('Credentials/newAcctVerify.php')
     <div>
         <p><?php echo $errorMessage['confirmPassword']; ?></p><!--Confirm Pass-->
     </div>
+    <div class="pin" style="width: 96.5%; height: 120px; display:none;" id="pin">
+        <h5>Security Pin</h5>
+        <input type="password" class="pin-input" name="pin1" maxlength="1">
+        <input type="password" class="pin-input" name="pin2" maxlength="1">
+        <input type="password" class="pin-input" name="pin3" maxlength="1">
+        <input type="password" class="pin-input" name="pin4" maxlength="1">
+        <div style="display: block; width: 96.5%; text-align: center;">
+        <p><?php echo $errorMessage['username']; ?></p>
+    </div>
+    </div>
+    
     <button type="submit" name="add">Add</button>
     <button name="cancel" onclick="toggleForm()">Cancel</button>
 </form>

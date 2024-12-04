@@ -10,11 +10,11 @@
 </form>
 
 <?php 
-include('../dbcheck/dbCheck.php');
+include('dbcheck/dbCheck.php');
 $errorMsg = array ('pin' => '');
 if(isset($_POST['confirm'])) {
     $pin = htmlspecialchars($_POST['pin1']) . htmlspecialchars($_POST['pin2']) . htmlspecialchars($_POST['pin3']) . htmlspecialchars($_POST['pin4']);
-    if (!preg_match('^\d{4}$', htmlspecialchars($pin))) {
+    if (!preg_match('/^\d{4}$/', htmlspecialchars($pin))) {
         $errorMsg['pin'] = "Pin is a 4-digit NUMBER";
     } else {
         $safeUsername = $_SESSION['username'];

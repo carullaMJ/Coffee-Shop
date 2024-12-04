@@ -24,11 +24,12 @@ if(isset($_POST['confirm'])) {
         $activeEmail = $_SESSION['activeEmail']; 
         $newPassword = $_SESSION['newPassword'];
         $position = $_SESSION['position'];
+        echo"console.log('fucked')";
 
         $sql= "INSERT INTO accounts(name, username, e_mail, password, position, pin) VALUES ('$name', '$userName', '$activeEmail', '$newPassword', '$position', '$pin')";
         if(mysqli_query($connect,$sql)) {
-        //header("Location: accountPage.php");
-        //exit();
+        header("Location: accountPage.php");
+        exit();
         } else {
         echo "query_error:".mysqli_error($connect);
         }

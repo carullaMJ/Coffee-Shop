@@ -1,3 +1,10 @@
+        var selectPosition = document.getElementById('accountPosition');
+
+        selectPosition.addEventListener("change", function() {
+            var pin = document.getElementById('pin');
+            pin.style.display = (selectPosition.value === 'admin') ? 'block' : 'none';
+        })
+        
         // Function to toggle the visibility of the floating form
         function visible() {
             var form = document.getElementById('formOverlay');
@@ -12,7 +19,7 @@
             var form = document.getElementById('formOverlay');
             var pin = document.getElementById('pinOverlay');
             form.style.display = 'none';
-            pin.style.display = 'block'
+            pin.style.display = 'block';
         }
         function togglePin() {
             var pin = document.getElementById('pinOverlay');
@@ -31,4 +38,12 @@
                 log.style.display = 'block';
                 document.getElementById('myAnchor').innerText = 'Display'
             }
+        }
+
+        function floatingPin () {
+            var pin = document.getElementById('floatingPin');
+            var log = document.getElementById('logIn');
+            log.style.display = 'none';
+            pin.style.display = 'block';
+
         }

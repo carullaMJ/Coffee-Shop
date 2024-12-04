@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 include('../dbcheck/dbCheck.php');
-$errorMessage = array('username' => '', 'firstName' => '', 'lastName' => '', 'activeEmail' => '', 'newPassword' => '', 'confirmPassword' => '', 'position' => '');
+$errorMessage = array('username' => '', 'firstName' => '', 'lastName' => '', 'activeEmail' => '', 'newPassword' => '', 'confirmPassword' => '', 'position' => '', 'pin' => '' );
 $newUsername = $firstName = $lastName = $name = $activeEmail = $newPassword = $confirmPassword = $position = '';
     if (isset($_POST['add'])) {
 
@@ -55,6 +55,8 @@ $newUsername = $firstName = $lastName = $name = $activeEmail = $newPassword = $c
         } else {
             $position = htmlspecialchars($_POST['position']);
         }
+
+        
         
     
     
@@ -119,13 +121,20 @@ $newUsername = $firstName = $lastName = $name = $activeEmail = $newPassword = $c
                 //Position
             $safePosition = mysqli_real_escape_string($connect, $position);
             if ($position == 'admin') {
-                $_SESSION['newUsername'] = $safeNewUsername;
-                $_SESSION['name'] = $name;
-                $_SESSION['activeEmail'] = $safeActiveEmail;
-                $_SESSION['newPassword'] = $encPassword;
-                $_SESSION['position'] = $safePosition;
-                echo '<script>secondForm()</script>';
-                
+                $pin = htmlspecialchars($_POST['pin1']) . htmlspecialchars($_POST['pin2']) . htmlspecialchars($_POST['pin3']) . htmlspecialchars($_POST['pin4']);
+                if(empty(htmlspecialchars($pin))) {
+                    $errorMessage['pin'] = "Don't leave this empty";
+                }elseif (!preg_match('/^\d{4}$/', htmlspecialchars($pin))) {
+                    $errorMessage['pin'] = "Pin must be a 4-digit Number";
+                } else {
+                    $sql= "INSERT INTO accounts(name, username, e_mail, password, position, pin) VALUES ('$name', '$safeNewUsername', '$safeActiveEmail', '$encPassword', '$safePosition', '$pin')";
+                    if(mysqli_query($connect,$sql)) {
+                    header("Location: accountPage.php");
+                    exit();
+                    } else {
+                    echo "query_error:".mysqli_error($connect);
+                    }
+                }  
             }
             else {
                 $sql= "INSERT INTO accounts(name, username, e_mail, password, position) VALUES ('$name', '$safeNewUsername', '$safeActiveEmail', '$encPassword', '$safePosition')";
