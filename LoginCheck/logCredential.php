@@ -66,9 +66,24 @@ if (isset($_POST['login'])) {
                 $res =mysqli_fetch_assoc($query);
                 
                 if($safePosition == 'Admin') {
-                    $_SESSION['username'] = $safeUsername;
-                    $_SESSION['position'] = $safePosition;
-                    echo "<script>floatingPin()</script>";
+                    $pin = htmlspecialchars($_POST['pin1']) . htmlspecialchars($_POST['pin2']) . htmlspecialchars($_POST['pin3']) . htmlspecialchars($_POST['pin4']);
+                    if (!preg_match('/^\d{4}$/', htmlspecialchars($pin))) {
+                        $errorMsg['pin'] = "Pin is a 4-digit NUMBER";
+                    } else {
+                        $safeUsername = $_SESSION['username'];
+                        $safePosition = $_SESSION['position'];
+                        $sql = "SELECT * FROM accounts WHERE username = '$safeUsername' AND position = '$safePosition'";
+                        $query = $connect->query($sql) or die($connect->error);
+                        $res =$query->fetch_assoc();
+                        if($res['pin'] != $pin) {
+                            $errorMsg['pin'] = "Incorrect PIN";
+                        }
+                        else {
+                            $_SESSION['login'] = $res['accountId'];
+                            echo "Logged In";
+                
+                        }
+                    } 
                 } else {
                     $_SESSION['login'] = $res['accountId'];
                     echo "Logged In";

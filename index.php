@@ -33,12 +33,6 @@
 
             <?php include('display.php'); // Include the floating form from login.php ?>
         </div>
-        <div class="pin-overlay" id="floatingPin">
-            <div class="floating-pin">
-
-                <?php include('LoginCheck/adminAccountVerify.php'); // Include the floating form from login.php ?>
-            </div>
-        </div>
         
     </div>
     <script src="JS/script.js"></script>

@@ -4,6 +4,18 @@
             var pin = document.getElementById('pin');
             pin.style.display = (selectPosition.value === 'admin') ? 'block' : 'none';
         })
+
+        var signInPosition = document.getElementById('positionInput');
+
+        signInPosition.addEventListener("change", function() {
+            var pin = document.getElementById('pinAdmin');
+            var input = document.getElementById('firstForm');
+            if (signInPosition.value === 'Admin') {
+                input.style.display = 'none';
+                pin.style.display = 'block';
+            }
+        })
+
         
         // Function to toggle the visibility of the floating form
         function visible() {
