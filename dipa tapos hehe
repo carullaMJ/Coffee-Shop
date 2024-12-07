@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caffeine Oasis - Sign In</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #d2a679, #e8c6a7);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            text-align: center;
+            background-color: #f9e3d2;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 400px;
+        }
+        .header {
+            font-family: 'Cursive', serif;
+            font-size: 2.5rem;
+            color: #5c4327;
+            margin-bottom: 10px;
+        }
+        .sub-header {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #8c5c3a;
+        }
+        .form-control {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+        input, select {
+            padding: 10px;
+            border: 1px solid #d1a184;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #8c5c3a;
+        }
+        button {
+            background-color: #8c5c3a;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #5c4327;
+        }
+        .footer {
+            font-size: 0.8rem;
+            color: #5c4327;
+            margin-top: 10px;
+        }
+        .footer a {
+            color: #8c5c3a;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">Caffeine Oasis</div>
+        <div class="sub-header">Sign in</div>
+        <form action="process_login.php" method="POST">
+            <div class="form-control">
+                <input type="text" name="username" placeholder="Username" required>
+            </div>
+            <div class="form-control">
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+            <div class="form-control">
+                <select name="position" required>
+                    <option value="">Position</option>
+                    <option value="Admin">Admin</option>
+                    <option value="Staff">Staff</option>
+                </select>
+            </div>
+            <button type="submit">Sign In</button>
+        </form>
+        <div class="footer">
+            If you don't have an account yet, please contact our admin <a href="#">here</a>.
+        </div>
+    </div>
+</body>
+</html>
+
