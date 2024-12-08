@@ -1,5 +1,11 @@
 <?php
-
+session_start();
+if(isset($_SESSION['adminLogin'])) {
+    header("Location: admin/adminPage.php");
+}
+if (isset($_SESSION['çashierLogin'])) {
+    header("Location: cashier/cashierPage.php");
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,29 +18,48 @@
     
 </head>
 <body style="background-color: #ECB176;">
+
+    <!-- Navigation bar start -->
     <nav class="navbar navbar-expand-lg navbar-dark" id="navigation">
         <div class="container-fluid">
             <a href="#"><img id="logo" src="images/Coffee Logo.png" alt=""></a>
             <button style="background-color: #FED8B1; font-family: 'Arial black'; color: #53321C;" id="myAnchor" class="btn" onclick="signin()">Display</button>
         </div>
     </nav>
+    <!-- Navigation bar end -->
+
+
+
+
+    <!-- Content Start -->
     <div class="container-xxl ">
+
+    <!-- Title start -->
         <div>
             <h1 class="text-center" id="title">Caffeine Oasis</h1>
         </div>
+    <!-- Title end -->
+
+    <!-- Log In Form-->
         <div class="logIn-overlay" id="logIn">
             <div class="floating-form" id="floatingForm" style="width: 30rem; margin: auto;">
 
-                <?php include('loginPage.php'); // Include the floating form from login.php ?>
+                <?php include('loginPage.php'); // Include the floating login form from loginPage.php ?>
         
             </div>
         </div>
+
+    <!-- Display -->
         <div class="display-overlay" id="display">
 
             <?php include('display.php'); // Include the floating form from login.php ?>
         </div>
         
     </div>
+    <!-- Content End -->
+
+
+    <!-- Javascript File -->
     <script src="JS/script.js"></script>
 </body>
 </html>

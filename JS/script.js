@@ -59,3 +59,41 @@
             pin.style.display = 'block';
 
         }
+
+
+
+        // Products slide bar
+        function updateProducts () {
+            var navbar = document.querySelector('.products');
+            var main = document.getElementById('main-tables');
+
+            navbar.style.bottom = '0';
+            main.style.marginBottom = '50%';
+        }
+        function closeButton () {
+            var navbar = document.querySelector('.products');
+            var main = document.getElementById('main-tables');
+
+            navbar.style.bottom = '-100%';
+            main.style.marginBottom = '-50%';
+        }
+
+        function toggleProd() {
+            var form = document.getElementById('prodOverlay');
+            form.style.display = (form.style.display === 'none' || form.style.display === '') ? 'block' : 'none';
+
+        }
+        function newProd() {
+            var form = document.getElementById('prodOverlay');
+            form.style.display = 'block';
+        }
+
+        function toggleDelProd() {
+            var form = document.getElementById('prodDelOverlay');
+            form.style.display = (form.style.display === 'none' || form.style.display === '') ? 'block' : 'none';
+
+        }
+        function delProd() {
+            var form = document.getElementById('prodDelOverlay');
+            form.style.display = 'block';
+        }

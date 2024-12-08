@@ -1,7 +1,4 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
 include('dbcheck/dbCheck.php');
 $errorMsg = array ('username' => '', 'password' => '', 'position' => '', 'alert' => '');
 $logInUsername = $logInPassword = $logInPosition = '';
@@ -70,23 +67,29 @@ if (isset($_POST['login'])) {
                     if (!preg_match('/^\d{4}$/', htmlspecialchars($pin))) {
                         $errorMsg['pin'] = "Pin is a 4-digit NUMBER";
                     } else {
-                        $safeUsername = $_SESSION['username'];
-                        $safePosition = $_SESSION['position'];
                         $sql = "SELECT * FROM accounts WHERE username = '$safeUsername' AND position = '$safePosition'";
                         $query = $connect->query($sql) or die($connect->error);
                         $res =$query->fetch_assoc();
                         if($res['pin'] != $pin) {
-                            $errorMsg['pin'] = "Incorrect PIN";
+                            echo "<script>alert('Incorrect Pin')</script>";
                         }
                         else {
-                            $_SESSION['login'] = $res['accountId'];
-                            echo "Logged In";
+                            $sql = $connect->prepare("INSERT INTO account_logs(accountID, position, username) VALUES (?, ?, ?)");
+                            $sql->bind_param("iss", $res['accountId'], $res['position'], $res['username']);
+                            $sql->execute();
+                            $_SESSION['adminLogin'] = $res['accountId'];
+                            $_SESSION['adminPin'] = $res['pin'];
+                            echo header('Location: index.php');
+                            exit();
                 
                         }
                     } 
                 } else {
-                    $_SESSION['login'] = $res['accountId'];
-                    echo "Logged In";
+                    $_SESSION['cashierLogin'] = $res['accountId'];
+                            $_SESSION['isLogged'] = true;
+                            echo header('Location: index.php');
+                            exit();
+                    
 
                 }
             }

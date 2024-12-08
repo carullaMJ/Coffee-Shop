@@ -1,3 +1,148 @@
+/* Basic reset */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+
+/* SLIDING NAVBAR */
+.sliding-navbar {
+    position: fixed;
+    left: 0;
+    bottom: -100%; /* Start with the navbar hidden below the screen */
+    width: 100%;
+    background-color: #6F4E37;
+    transition: bottom 0.3s ease; /* Smooth transition when sliding up/down */
+    z-index: 1000;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.selectColumn {
+    display: flex;
+    margin-top: 20px;
+    align-items: center;
+    width: 100%;
+}
+.idSelector {
+    margin-left: 10px;
+}
+.selectId {
+    width: 100%;
+    display: flex;
+    margin-top: 20px;
+    align-items: center;
+  }
+
+.selectId select {
+    background-color: #FED8B1;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ECB176;
+    font-size: 16px;
+  }
+
+.tableColumn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.box {
+    width: 60px;
+    padding-bottom: 5px;
+}
+.changeVal {
+    margin-left: 10px;
+}
+.changeValue, .submitUpdate {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .changeVal {
+    width: 25ch;
+    background-color: #FED8B1;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ECB176;
+    font-size: 16px;
+  }
+
+  .changeValue input select {
+    width: 70%;
+    background-color: #FED8B1;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ECB176;
+    font-size: 16px;
+  }
+
+  .submitUpdate button {
+    width: 80%;
+    background-color: #ECB176; 
+    border-radius: 6px;
+    font-size:20px;
+    padding: 12px;
+    color: #6F4E37;
+    border: none;
+    margin-top: 20px;
+  }
+  
+  /* The navigation menu links */
+  .sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 35px;
+    color: #FED8B1;
+    display: block;
+    transition: 0.3s;
+  }
+  
+  /* When you mouse over the navigation links, change their color */
+  .sidenav button:hover {
+    color: #f1f1f1;
+  }
+  
+  /* Position and style the close button (top right corner) */
+  .sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+  }
+  
+  /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+  #main {
+    transition: margin-left .5s;
+    padding: 0px;
+  }
+  
+  /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+  @media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+  }
+
+
+
+
+
+
+
+
 #navigation {
     border-bottom-right-radius: 10;
     background-color: #6F4E37;
@@ -50,7 +195,19 @@
     justify-content: center;
 }
 
-.form-overlay {
+.label {
+    font-size: 20px;
+    color: black;
+    margin-bottom: 0px;
+}
+
+.info {
+    font-size: 12px;
+    color: #333;
+    margin-bottom: 0px;
+}
+
+.form-overlay, .product-overlay, .productDel-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -61,7 +218,7 @@
     justify-content: center;
     align-items: center;
     z-index: 999;
-    padding-top: 6%;
+    padding-top: 4%;
 }
 .pin-overlay {
     position: fixed;
@@ -77,7 +234,7 @@
     padding-top: 10%;
 }
 
-/* Centered form styling */
+/* FLOATING FORM */
 .floating-form {
     width: 400px;
     padding: 30px;
@@ -100,7 +257,7 @@
     border-radius: 6px;
     border: 1px solid #ccc;
     font-size: 16px;
-    width: 40ch;
+    width: 45%;
     display: inline-block;
     margin-left: 10px;
     margin-right: 10px;
@@ -127,14 +284,15 @@
 
 .floating-form div{
     height: 15px;
-    width: 40ch;
+    width: 45%;
     display: inline-block;
     margin-left: 10px;
     margin-right: 10px;
     padding-left: 10px;
+    
 
 }
-.floating-form p {
+.warning {
     font-size: 12px;
     color: red;
 }
@@ -143,8 +301,9 @@
     text-align: center;
 }
 
-/* Floating pin */
 
+
+/* FLOATING PIN */
 .pin input{
     padding: 12px;
     border-radius: 6px;
@@ -159,6 +318,47 @@
 .pin {
     width: 100%;
     text-align: center;
-    margin-bottom: 5px;
+    margin-bottom: 30px;
+}
 
+
+
+
+/* TABLES DISPLAY */
+#tableAccount, #tableAccountLogs, #tableProducts, #tableOrders {
+    width: 65rem;
+     background-color: #FED8B1; 
+     margin: auto; 
+     margin-top: 30px; 
+     border-radius: 10px;
+}
+
+.update-delete {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+    margin-bottom: 20px;
+}
+.update-delete button {
+    width: 30%;
+}
+
+/* Confirmation Pin */
+.admin-pin input{
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ECB176;
+    font-size: 16px;
+    width: 6ch;
+    margin-left: 2px;
+    margin-right: 2px;
+    text-align: center;
+    flex: 1;
+    margin-bottom: 20px;
+    background-color: #FED8B1;
+}
+.admin-pin {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 5px;
 }

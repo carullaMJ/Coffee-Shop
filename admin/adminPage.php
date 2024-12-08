@@ -1,3 +1,5 @@
+<?php 
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,11 +17,11 @@
                     <button class="btn" style="" id="myDropdown"><img src="../images/AdminLogo.png" alt="" id="logo"></button>
                     <div id="dropdown-content">
                         <a href="accountPage.php">Accounts</a>
-                        <a href="#link2">Tables</a>
+                        <a href="tables.php">Tables</a>
+                        <a href="../logout.php">LogOut</a>
                     </div>
                 </div>
             </div>
     </nav>
-    
 </body>
 </html>

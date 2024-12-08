@@ -19,8 +19,10 @@ CREATE TABLE accounts (
 CREATE TABLE account_logs (
     logID int Primary key AUTO_INCREMENT,
     login_date TIMESTAMP,
-    accountID int, Foreign key(accountID) references accounts(accountID)
+    accountID int, 
+    Foreign key(accountID) references accounts(accountID),
     position varchar(50),
+    username varchar(100)
 );
 
 --Product table
@@ -38,7 +40,7 @@ CREATE TABLE orders (
     quantity int,
     totalAmount numeric,
     payment numeric,
-    change numeric,
+    changes numeric,
     date_created TIMESTAMP
 );
 

@@ -44,6 +44,17 @@
     margin-top: 5px;
     margin-bottom: 5px;
 }
+
+#cancelButton {
+    background-color: #A67B5B;
+    border: 1px #654520;
+    color: white;
+    font-family: 'Arial black';
+    margin-top: 5px;
+    margin-bottom: 5px;
+    display: block;
+    margin: auto;
+}
 #logo {
     width: 40px;
     margin-left: 10px;
@@ -89,6 +100,7 @@
     margin-right: 10px;
     text-align: center;
     flex: 1;
+    margin-bottom: 20px;
 }
 .admin-pin {
     width: 100%;

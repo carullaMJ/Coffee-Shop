@@ -6,4 +6,4 @@
                 <p id="visit">or Visit US at:</p>
                 <p id="visit_website">https://Caffeine_Oasis.com</p>
             </div>
-        </div>
+</div>
