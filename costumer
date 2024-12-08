@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+    <title>Caffeine Oasis</title>
+    <style>
+        body {
+            font-family: 'Dancing Script', cursive;
+            background-color: #f3d9b1;
+            color: #6a4413;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background-color: #815838;
+            width: 100%;
+            padding: 10px;
+            display: flex;
+            justify-content: left;
+            position: fixed;
+            top: 0;
+        }
+
+        .navbar img {
+            width: 40px;
+            height: 30px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 350px;
+            height: 560px;
+            background-color: #f4e1c1;
+            border: 1px solid #d3a575;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            margin-top: 80px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .header h2 {
+            font-size: 1.2rem;
+            margin: 5px 0 20px;
+        }
+
+        .header h3 {
+            margin: 5px 0 20px;
+            text-align: center;
+            font-family:'Times New Roman', Times, serif;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: left; 
+            text-align: left; 
+            font-family:'Times New Roman', Times, serif;
+        }
+
+        .form-group label {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            text-align: left;
+            align-items: left; 
+        }
+
+        
+        .form-group input{
+            width: 95%;  
+            padding: 10px;
+            color: #cfc9c2;
+            text-align: left; 
+            
+        }
+
+        
+        .form-group input:focus {
+            outline: none;  
+            border: none;   
+             
+        }
+
+        .form-group textarea {
+            width: 95%;  
+            height: 140px;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #d3a575;
+            border-radius: 5px;
+            background-color: #FAF0E6;
+            color: #6a4413;
+            resize: none;
+            text-align: left;  
+        }
+
+        .order-button {
+            width: 60%;
+            padding: 10px;
+            font-size: 1rem;
+            background-color: #815838;
+            color: #FAF0E6;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        .order-button:hover {
+            background-color: #6a4413;
+        }
+
+        .submit-button {
+            width: 50%;
+            padding:10px;
+            font-size: 1rem;
+            background-color: #6a4413;
+            color: #FAF0E6;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .submit-button:hover {
+            background-color: #815838;
+        }
+
+        .description-counter {
+            text-align: right;
+            font-size: 1rem;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <img src="Coffee Logo.png" alt="Cafe Logo">
+    </header>
+    <div class="container">
+        <div class="header">
+            <h2>Welcome to</h2>
+            <h1>Caffeine Oasis</h1>
+            <h3>Place your order:</h3>
+        </div>
+        <form>
+            <div class="form-group">
+                <label for="customer-name">Customer Name:</label>
+                <input type="text1" id="userInput" class="underline-input" placeholder="_____________________________">
+                <input type="text2" id="customer-name" placeholder="Empty">
+            </div>
+            <button type="button" class="order-button">Select your order here &gt;&gt;</button>
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <div class="description-counter">0/100</div>
+                <textarea id="description" maxlength="100" placeholder="Enter description..."></textarea>
+            </div>
+            <button type="submit" class="submit-button">Submit Order</button>
+        </form>
+    </div>
+</body>
+</html>
