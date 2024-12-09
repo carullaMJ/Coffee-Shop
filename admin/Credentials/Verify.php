@@ -50,9 +50,23 @@ $safeNewUsername = $safeNewPass = $safeActiveEmail = $safeLastName = $safeFirstN
         if($_POST['position'] == 'selectPosition') {
             echo "<script>visible()</script>";
             $errorMessage['position'] = 'Don\'t leave this blank';
-        } else {
-            $position = htmlspecialchars($_POST['position']);
+        } elseif ($_POST['position'] == 'admin') {
+                $position = htmlspecialchars($_POST['position']);
+                $sql = "SELECT * FROM accounts WHERE position = ?";
+                $stmt = $connect->prepare($sql);
+                $stmt->bind_param("s", $position);
+                $stmt->execute();
+                $query = $stmt->get_result();
+                $res = $query->num_rows;
+                $errorMessage['position'] = $res;
+                if($res > 0) {
+                    $errorMessage['position'] = "There is already an admin account, can't create another";
+                } 
+        }else {
+                $position = htmlspecialchars($_POST['position']);
         }
+            
+            
 
         
         
@@ -60,31 +74,25 @@ $safeNewUsername = $safeNewPass = $safeActiveEmail = $safeLastName = $safeFirstN
     
         if (!empty($firstName) || !empty($lastName) || !empty($activeEmail) || !empty($newPassword) || !empty($confirmPassword)) {
             if (!preg_match('/^[A-Za-z0-9_-]{3,20}$/', htmlspecialchars($newUsername))) {
-                echo "<script>visible()</script>";
                 $errorMessage['username'] = 'Enter a proper username';
             }
             if (!preg_match('/^[A-Za-z]+([ \'-][A-Za-z]+)*$/', htmlspecialchars($firstName))) {
-                echo "<script>visible()</script>";
                 $errorMessage['firstName'] = 'Enter a proper name';
             }
     
             if (!preg_match('/^[A-Za-z]+([ \'-][A-Za-z]+)*$/', htmlspecialchars($lastName))) {
-                echo "<script>visible()</script>";
                 $errorMessage['lastName'] = 'Enter a proper name';
             }
     
             if(!filter_var(htmlspecialchars($activeEmail), FILTER_VALIDATE_EMAIL)) {
-                echo "<script>visible()</script>";
                 $errorMessage['activeEmail'] = 'Enter a valid email address';
             }
     
             $passwordPattern ="/^[A-Za-z0-9!@#$%^&*()_+={}[\]|\\:;\"'<>,.?-]{8,}$/";
             if(!preg_match($passwordPattern, htmlspecialchars($newPassword))) {
-                echo "<script>visible()</script>";
                 $errorMessage['newPassword'] = 'Must be at least 8 Characters';
             }
             if($confirmPassword != $newPassword) {
-                echo "<script>visible()</script>";
                 $errorMessage['confirmPassword'] = 'Password Incorrect';
             }
         }
@@ -130,11 +138,11 @@ $safeNewUsername = $safeNewPass = $safeActiveEmail = $safeLastName = $safeFirstN
                 }elseif (!preg_match('/^\d{4}$/', htmlspecialchars($pin))) {    //check if the pin is four numbers only
                     $errorMessage['pin'] = "Pin must be a 4-digit Number";
                 } else {
-                    $sql = $connect->prepare("INSERT INTO accounts(name, username, e_mail, password, position, pin) VALUES (?, ?, ?, ?, ?, ?)");
-                    $sql->bind_param("sssssi", $name, $safeNewUsername, $safeActiveEmail, $encPassword, $safePosition, $pin);
-                    $sql->execute();
+                    $sql = "INSERT INTO accounts(name, username, e_mail, password, position, pin) VALUES (?, ?, ?, ?, ?, ?)";
+                    $stmt = $connect->prepare();
+                    $stmt->bind_param("sssssi", $name, $safeNewUsername, $safeActiveEmail, $encPassword, $safePosition, $pin);
                     
-                    if(mysqli_query($connect,$sql)) {
+                    if($stmt->execute()) {
                     header("Location: accountPage.php");
                     exit();
                     } else {
@@ -158,13 +166,20 @@ $safeNewUsername = $safeNewPass = $safeActiveEmail = $safeLastName = $safeFirstN
                 $connect->close();
             }
         }
-     }
-        
+    }    
 
 //NEW PRODUCT VERIFICATION
+
+//array of error message on adding new product
 $errorProd = array ('productName' => '', 'price' => '', 'availability' => '', 'pin' => '');
+
+//array of error message on updating new product
 $errorUpdateProd = array('updateProd' => '', 'updatePrice' => '', 'updateAvail' => '', 'pin' => '', 'prodID' => '');
+
+//variables for adding and updating products
 $newProduct = $newPrice = $availability = $pin = $prodID = $productName = $prodPrice = $prodAvail = '';
+
+
 if (isset($_POST['addProd'])) {
     if(empty($_POST['newProduct'])) {
         $errorProd['productName'] = "Don't leave this empty";
@@ -187,7 +202,7 @@ if (isset($_POST['addProd'])) {
 
     if(!empty($newProduct) || !empty($newPrice) || !empty($availability)) {
         
-        if(!preg_match('/^[A-Za-z0-9_-]{3,20}$/', $newProduct)) {
+        if(!preg_match('/(?:\s*\w+\s*)+/', $newProduct)) {
             echo "<script>newProd()</script>";
             $errorProd['productName'] = "Enter a proper name";
         }
@@ -221,18 +236,19 @@ if (isset($_POST['addProd'])) {
         $safeAvailability = mysqli_real_escape_string($connect, $availability);
 
         if ($_SESSION['adminPin'] == $pin) {
-            $sql = $connect->prepare("INSERT INTO products (ProductName, price, availability) VALUE (?, ?, ?)");
-            $sql->bind_param("sds", $safeNewProd, $safeNewPrice, $safeAvailability);
-            $sql->execute();
 
-            if ($sql->execute()) {
+            $sql = "INSERT INTO products (ProductName, price, availability) VALUE (?, ?, ?)";
+            $stmt = $connect->prepare($sql);
+            $stmt->bind_param("sds", $safeNewProd, $safeNewPrice, $safeAvailability);
+
+            if ($stmt->execute()) {
                 header('Location: ../tables.php');
                 exit();
             } else {
                 echo "Error: " . $stmt->error;
             }
 
-            $sql->close();
+            $stmt->close();
             $connect->close();
         } else {
             $errorProd['pin'] = "Incorrect Pin";
@@ -241,15 +257,17 @@ if (isset($_POST['addProd'])) {
     }
 }
 
+/* UPDATES PRODUCTS TABLE */
 
-
+// Verification for updating the data inside the products table
 if(isset($_POST['updateProducts'])) {
 
+    //if there is no Id selected it spit an error to remind user to enter an id to proceed
     if($_POST['updateId'] == 'noId') {
         $errorUpdateProd['pin'] = "Enter ID";
     }
     else {
-        
+        //if there is a selected id it will traverse to the data inside the table to find the specific id
         $prodID = mysqli_real_escape_string($connect, $_POST['updateId']);
 
         $sql = "SELECT * FROM products WHERE productID = '$prodID'";
@@ -258,11 +276,14 @@ if(isset($_POST['updateProducts'])) {
         if ($result > 0) {
             $data = mysqli_fetch_assoc($query);
         }else {
+            //if the id isn't found it will spit an error that the id doesn't exist in the table
             $errorUpdateProd['prodID'] = "Id does not exists";
         }
        
     }
     
+    //if any input field is blank it will assign to the variables the original data that's inside the table
+    //else the values in the input field will be transferred to the designated variables
     if(empty($_POST['updateProduct'])) {
         $productName = $data['ProductName'];
     } else {
@@ -282,8 +303,10 @@ if(isset($_POST['updateProducts'])) {
     }
 
 
+    /*now if the the input fields are not empty it will enter another validation on which it will be tested on the regex combination
+      if it does not match the combinations of letters, numbers, symbols, or whitespaces. it will produce some error message/s   */
     if(!empty($productName) || !empty($prodPrice) || !empty($prodAvail)) {
-        if(!preg_match('/^[A-Za-z0-9_-]{3,20}$/', $productName)) {
+        if(!preg_match('/(?:\s*\w+\s*)+/', $productName)) {
             echo "<script>newProd()</script>";
             $errorUpdateProd['updateProd'] = "Enter a proper name";
         }
@@ -293,36 +316,45 @@ if(isset($_POST['updateProducts'])) {
         }
     }
 
+
+    //The confirmation pin will be concatinated into one value of course it will be filtered
     $pin = htmlspecialchars($_POST['pin1']) . htmlspecialchars($_POST['pin2']) . htmlspecialchars($_POST['pin3']) . htmlspecialchars($_POST['pin4']);
+
+    //checks if the pin is empty
     if(empty(htmlspecialchars($pin))) {
         $errorUpdateProd['pin'] = "Don't leave this empty";
+
+    //Pin must be composed of combination of 4-digit number
     } elseif (!preg_match('/^\d{4}$/', htmlspecialchars($pin))) {
         $errorUpdateProd['pin'] = "Pin must be a 4-digit number";
     } else {
         $safePin = mysqli_real_escape_string($connect, $pin);
     }
 
+    //if the array $errorUpdateProd have some values stored, it will alert that there are error/s still left and must be fixed to proceed
     if(array_filter($errorUpdateProd)) {
         echo '<script> alert("There are some errors in the form, couldn\'t proceed if NOT fixed!")
              updateProducts();
              </script>';
     } else {
+        //if there aren't any errors left, it will be filtered again and will be passed to another variables
         $safeProdName = mysqli_real_escape_string($connect, $productName);
 
         $safeProdPrice = mysqli_real_escape_string($connect, $prodPrice);
 
         $safeProdAvail = mysqli_real_escape_string($connect, $prodAvail);
 
-
+    /*$_SESSION['adminPin'] is the pin of the admin logged in and if it matches the the pin entered for confirmation
+        it will finally update the data in the table with the data entered by the user */
     if ($_SESSION['adminPin'] == $pin) {
 
+        //PHP prepared statement to pass the data to prevent from sql injection
         $sql = "UPDATE products SET ProductName = ?, price = ?, availability = ? WHERE productID = ?";
         $stmt = $connect->prepare($sql);
         $stmt->bind_param("sdsi", $safeProdName, $safeProdPrice, $safeProdAvail, $prodID);
-        $stmt->execute();
 
         if ($stmt->execute()) {
-            //header('Location: tables.php');
+            echo header('Location: tables.php');
             exit();
         } else {
             echo "Error: " . $stmt->error;
@@ -337,17 +369,23 @@ if(isset($_POST['updateProducts'])) {
 
 }
 
+/* DELETE DATA FROM THE PRODUCTS TABLE */
 
-
+//array to store the errors when inserting data from the input field
 $errorDelProd = array ('pin' => '', );
+//variable to store the product id
 $delProdId = 0;
+
+//check if submit button to delete data is clicked
 if(isset($_POST['delProd'])) {
 
+    //if the input field to find the id is empty, it will spit an error
     if(empty($_POST['delRow'])) {
         $errorUpdateProd['pin'] = "Enter a row";
     }
     else {
         
+        //if there is a selected id it will traverse to the data inside the table to find the specific id
         $delProdId = mysqli_real_escape_string($connect, $_POST['delRow']);
         echo $delProdId;
 
@@ -357,35 +395,44 @@ if(isset($_POST['delProd'])) {
         if ($result > 0) {
             $data = mysqli_fetch_assoc($query);
         }else {
+            //if the id isn't found it will spit an error that the id doesn't exist in the table
             $errorDelProd['prodID'] = "Row does not exists";
         }
        
     }
 
+    //The confirmation pin will be concatinated into one value of course it will be filtered
     $pin = htmlspecialchars($_POST['pin1']) . htmlspecialchars($_POST['pin2']) . htmlspecialchars($_POST['pin3']) . htmlspecialchars($_POST['pin4']);
+
+    //checks if the pin is empty
     if(empty(htmlspecialchars($pin))) {
         $errorDelProd['pin'] = "Don't leave this empty";
+
+    //Pin must be composed of combination of 4-digit number
     } elseif (!preg_match('/^\d{4}$/', htmlspecialchars($pin))) {
         $errorDelProd['pin'] = "Pin must be a 4-digit number";
     } else {
         $safePin = mysqli_real_escape_string($connect, $pin);
     }
 
+    //if the array $errorDelProd have some values stored, it will alert that there are error/s still left and must be fixed to proceed
     if(array_filter($errorDelProd)) {
         echo '<script> alert("There are some errors in the form, couldn\'t proceed if NOT fixed!")
              delProd();
              </script>';
     } else {
 
+        /*$_SESSION['adminPin'] is the pin of the admin logged in and if it matches the the pin entered for confirmation
+        it will finally update the data in the table with the data entered by the user */
         if ($_SESSION['adminPin'] == $pin) {
 
+            //PHP prepared statement to pass the data to prevent from sql injection
             $sql = "DELETE FROM products WHERE productID = ?";
             $stmt = $connect->prepare($sql);
             $stmt->bind_param("i", $delProdId);
-            $stmt->execute();
 
             if ($stmt->execute()) {
-                //header('Location: tables.php');
+                echo header('Location: tables.php');
                 exit();
             } else {
                 echo "Error: " . $stmt->error;

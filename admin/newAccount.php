@@ -38,7 +38,7 @@ include ('Credentials/Verify.php')
     </div>
     <div class="pin" style="width: 96.5%; height: 120px; display:none;" id="pin">
         <p class="label">Enter a 4-digit Pin</p>
-        <p class="info">(Only Admin accounts has a 4-digit Pin)</p>
+        <p class="info">(Only Admin account has a 4-digit Pin)</p>
         <input type="password" class="pin-input" name="pin1" maxlength="1" autofocus>
         <input type="password" class="pin-input" name="pin2" maxlength="1">
         <input type="password" class="pin-input" name="pin3" maxlength="1">

@@ -49,11 +49,19 @@
                         </thead>
                         <tbody>
                             <?php
+                            //traversing to all data/rows inside the table accounts
                             $sql = "SELECT * FROM account_logs";
-                            $query = mysqli_query($connect,$sql);
-                            $res = mysqli_num_rows($query);
+                            $stmt = $connect->prepare($sql);
+                            $stmt->execute();
+                            $query = $stmt->get_result();
+                            $res = $query->num_rows;
+                            $i = 0;
+
+                            //checking if the table is not empty
                             if($res > 0) {
-                                while($data = mysqli_fetch_assoc($query)) :?>
+
+                                //Loops through the rows of the table
+                                while($data = $query->fetch_assoc()) :?>
                                     <tr>
                                         <th class="text-muted" scope="row"><?php echo $data['logID'] ?></th>
                                         <td class="text-muted"><?php echo $data['accountID']?></td>
@@ -73,7 +81,6 @@
                         </tbody>
                     </table>
             </div>
-            <?php include('Credentials/updateAcct.php'); ?>
         </div>
 <!-- ACCOUNT LOGS END -->
 
@@ -102,11 +109,19 @@
                         </thead>
                         <tbody>
                             <?php
+                            //traversing to all data/rows inside the table accounts
                             $sql = "SELECT * FROM products";
-                            $query = mysqli_query($connect,$sql);
-                            $res = mysqli_num_rows($query);
+                            $stmt = $connect->prepare($sql);
+                            $stmt->execute();
+                            $query = $stmt->get_result();
+                            $res = $query->num_rows;
+                            $i = 0;
+
+                            //checking if the table is not empty
                             if($res > 0) {
-                                while($data = mysqli_fetch_assoc($query)) :
+
+                                //Loops through the rows of the table
+                                while($data = $query->fetch_assoc()) :
                                 ?>
                                     <tr>
                                         <th class="text-muted" scope="row"><?php echo $data['productID'] ?></th>
@@ -129,10 +144,6 @@
                         </tbody>
                     </table>
             </div>
-            <?php include('Credentials/updateAcct.php'); ?>
-
-            
-            
         </div>
 <!-- PRODUCTS TABLE END -->
 
@@ -163,11 +174,18 @@
                         </thead>
                         <tbody>
                             <?php
+                            //traversing to all data/rows inside the table accounts
                             $sql = "SELECT * FROM orders";
-                            $query = mysqli_query($connect,$sql);
-                            $res = mysqli_num_rows($query);
+                            $stmt = $connect->prepare($sql);
+                            $stmt->execute();
+                            $query = $stmt->get_result();
+                            $res = $query->num_rows;
+
+                            //checking if the table is not empty
                             if($res > 0) {
-                                while($data = mysqli_fetch_assoc($query)) :
+
+                                //Loops through the rows of the table
+                                while($data = $query->fetch_assoc()) :
                                 ?>
                                     <tr>
                                         <th class="text-muted" scope="row"><?php echo $data['orderID'] ?></th>
@@ -191,23 +209,20 @@
                         </tbody>
                     </table>
             </div>
-            <?php include('Credentials/updateAcct.php'); ?>
         </div>
 <!-- ORDERS TABLE END -->
 
         <div>
         <?php 
+        include('Credentials/updateAcct.php');
         include('floatingPages.php');
+        include('Credentials/Verify.php');
         ?>
         </div>                    
-            
     </div>
     </div>
     
 
     <script src="../JS/script.js"></script>
-    <?php 
-        include('Credentials/Verify.php');
-?>
 </body>
 </html>
