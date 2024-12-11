@@ -103,7 +103,20 @@ $safeNewUsername = $safeNewPass = $safeActiveEmail = $safeLastName = $safeFirstN
             if($confirmPassword != $newPassword) {
                 $errorMessage['confirmPassword'] = 'Password Incorrect';
             }
+
+            // check if an account with same username already exists
+            $sql = "SELECT * FROM accounts WHERE username = ?";
+            $stmt = $connect->prepare($sql);
+            $stmt->bind_param("s", $newUsername);
+            $stmt->execute();
+            $query = $stmt->get_result();
+            $res = $query->num_rows;
+            if($res > 0) {
+                $errorMessage['username'] = "Username already taken";
+            }
         }
+
+
         
         // Checks if there are values stored in the array $errorMessage
         if(array_filter($errorMessage)) {

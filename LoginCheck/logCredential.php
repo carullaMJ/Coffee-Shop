@@ -85,10 +85,21 @@ if (isset($_POST['login'])) {
                         }
                     } 
                 } else {
-                    $_SESSION['cashierLogin'] = $res['accountId'];
-                            $_SESSION['isLogged'] = true;
+                        $sql = "SELECT * FROM accounts WHERE username = ? AND position = ?";
+                        $stmt = $connect->prepare($sql);
+                        $stmt->bind_param("ss", $safeUsername, $safePosition);
+                        $stmt->execute();
+                        $query = $stmt->get_result();
+                        $res =$query->fetch_assoc();
+                        if($res > 0) {
+                            $sql = $connect->prepare("INSERT INTO account_logs(accountID, position, username) VALUES (?, ?, ?)");
+                            $sql->bind_param("iss", $res['accountId'], $res['position'], $res['username']);
+                            $sql->execute();
+                            $_SESSION['cashierLogin'] = $res['accountId'];
                             echo header('Location: index.php');
                             exit();
+                        }
+                           
                     
 
                 }

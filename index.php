@@ -3,7 +3,7 @@ session_start();
 if(isset($_SESSION['adminLogin'])) {
     header("Location: admin/adminPage.php");
 }
-if (isset($_SESSION['çashierLogin'])) {
+if (isset($_SESSION['cashierLogin'])) {
     header("Location: cashier/cashierPage.php");
 }
 ?>
