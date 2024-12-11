@@ -13,11 +13,13 @@
 </head>
 <body style="background-color: #ECB176;">
     <div id="main">
+
+    <!-- Navbar start -->
     <nav class="navbar navbar-expand-lg navbar-dark" id="navigation">
             <div class="container-fluid">
-                <a href="#"><img id="logo" src="../images/Coffee Logo.png" alt=""></a>
+                <a href="adminPage.php"><img id="logo" src="../images/Coffee Logo.png" alt=""></a>
                 <div id="dropdown">
-                    <button class="btn" style="" id="myDropdown"><img src="../images/AdminLogo.png" alt="" id="logo"></button>
+                    <button class="btn" id="myDropdown"><img src="../images/AdminLogo.png" alt="" id="logo"></button>
                     <div id="dropdown-content">
                         <a href="accountPage.php">Accounts</a>
                         <a href="tables.php">Tables</a>
@@ -26,8 +28,12 @@
                 </div>
             </div>
     </nav>
+    <!-- navbar end -->
+
     <div class="container-xxl ">
         <div id="tableAccount">
+
+            <!-- Account table start -->
             <nav class="navbar navbar-expand-lg">
                 <div class="container-fluid">
                     <p class="display-5">Account</p>
@@ -35,10 +41,14 @@
                 </div>
             </nav>
             <div>
+            
+            <!-- Buttons for Modification start -->
             <div class="update-delete">
                 <button class="toggle-btn btn btn-primary font-weight-bold mx-0 px-5 rounded">Edit</button></td>
                 <button class="btn btn-danger font-weight-bold mx-0 px-5 rounded" onclick="toggleDelAcct()">Delete</button></td>
             </div>
+            <!-- Buttons for Modification end -->
+
                     <table class="table border border-1 border-light">
                         <thead>
                             <tr>
@@ -83,18 +93,19 @@
                         </tbody>
                     </table>
             </div>
-
-            
-            
         </div>
+        <!-- Account table end -->
+
+        <!-- Floating Form start -->
             <div class="form-overlay" id="formOverlay">
                 <div class="floating-form" id="floatingForm" style="width: 50rem; margin: auto;">
                     <h3 class="card-title">New Account</h3>
 
-                    <?php include('newAccount.php'); // Include the floating form from form.php ?>
+                    <?php include('newAccount.php'); // Include the floating form from newAccount.php ?>
         
                 </div>
             </div>
+        <!-- Floating form end -->
     </div>
     </div>
 
@@ -134,10 +145,12 @@
         <select class="idSelector" name="updateAcctId">
             <option value="noId"></option>
             <?php 
+                // get all data from the accounts table
                 $sql = "SELECT * FROM accounts";
                 $query = mysqli_query($connect,$sql);
                 $res = mysqli_num_rows($query);
                 
+                // loop to display the accountId
                 if($res > 0) {
                     while ($data = mysqli_fetch_assoc($query)) : ?>
                 <option value="<?php echo $data['accountId'] ?>"><?php echo $data['accountId'] ?></option>  
@@ -161,10 +174,11 @@
                     <div>
                         <p><?php echo $errorUpdateAcct['pin'] ?></p>
                     </div>
+        <!-- update button -->
         <div class="submitUpdate">
             <button type="submit" name="updateAccount">UPDATE</button>
         </div>
-        
+        <!-- close button -->
     </div>
         <button class="close-btn" onclick="closeButton()">&#10005;</button>
     </div>
@@ -180,6 +194,7 @@
             <select name="delRow" id="productAvailability" style="width: 96.5%;">
                 <option value="blank">Select Row</option>
                 <?php 
+                    //traversing to all data/rows inside the table accounts
                     $position = 'cashier';
                     $sql = "SELECT * FROM accounts WHERE position = ?";
                     $stmt = $connect->prepare($sql);
@@ -188,7 +203,10 @@
                     $query = $stmt->get_result();
                     $res = $query->num_rows;
                     
+                    //checking if the table is not empty
                     if($res > 0) {
+
+                        //Loops through the rows of the table
                         while ($data = mysqli_fetch_assoc($query)) : ?>
                     <option value="<?php echo $data['accountId'] ?>"><?php echo $data['accountId']." ".$data['username']." ".$data['name'] ?></option>  
                 <?php
@@ -199,7 +217,7 @@
             <div style="width: 96.5%;">
                 <p class="warning"><?php echo $errorProd['availability'];?></p><!--position-->
             </div>
-            
+            <!-- 4-digit pin -->
             <div class="pin" style="width: 96.5%; height: 120px;" id="pin">
                 <p class="label">Enter your pin here</p>
                 <p class="info">(confirm your pin to delete account)</p>
@@ -260,7 +278,7 @@
 
     </script>
     <?php 
-        include('Credentials/Verify.php');
+        include('Credentials/Verify.php');  //include Verify.php
 ?>
 </body>
 </html>

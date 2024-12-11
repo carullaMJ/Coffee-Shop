@@ -105,7 +105,7 @@ $safeNewUsername = $safeNewPass = $safeActiveEmail = $safeLastName = $safeFirstN
             }
         }
         
-    
+        // Checks if there are values stored in the array $errorMessage
         if(array_filter($errorMessage)) {
             echo '<script> alert("There are some errors in the form, couldn\'t proceed if NOT fixed!")</script>';
             echo "<script>visible()</script>";
@@ -135,40 +135,45 @@ $safeNewUsername = $safeNewPass = $safeActiveEmail = $safeLastName = $safeFirstN
                 //Position
             $safePosition = mysqli_real_escape_string($connect, $position);
 
-            
+            // if the selected position is 'admin'
             if ($position == 'admin') {
 
                 //storing the value of four input tag for pin to a single variable
                 $pin = htmlspecialchars($_POST['pin1']) . htmlspecialchars($_POST['pin2']) . htmlspecialchars($_POST['pin3']) . htmlspecialchars($_POST['pin4']);
-                //executes if empty
+                //executes if $pin is empty
                 if(empty(htmlspecialchars($pin))) {
                     $errorMessage['pin'] = "Don't leave this empty";
                 }elseif (!preg_match('/^\d{4}$/', htmlspecialchars($pin))) {    //check if the pin is four numbers only
                     $errorMessage['pin'] = "Pin must be a 4-digit Number";
                 } else {
+                    // if pin is successfully filtered, inserting data in the table accounts using prepared statement
                     $sql = "INSERT INTO accounts(name, username, e_mail, password, position, pin) VALUES (?, ?, ?, ?, ?, ?)";
                     $stmt = $connect->prepare();
                     $stmt->bind_param("sssssi", $name, $safeNewUsername, $safeActiveEmail, $encPassword, $safePosition, $pin);
                     
+                    //executes the codes above
                     if($stmt->execute()) {
-                    header("Location: accountPage.php");
+                    header("Location: accountPage.php"); // goes to accountPage
                     exit();
                     } else {
-                    echo "query_error:".mysqli_error($connect);
+                    echo "query_error:".mysqli_error($connect);   //display error
                     }
                 }  
-            }
-            else {
+            
+            // if the selected position is 'cashier'
+            } else {
+                // inserting data in the table accounts using prepared statement
                 $sql = $connect->prepare("INSERT INTO accounts(name, username, e_mail, password, position) VALUES (?, ? ,?, ?, ?)");
                 $sql->bind_param("sssss", $name, $safeNewUsername, $safeActiveEmail, $encPassword, $safePosition);
-                $sql->execute();
                 
-                if(mysqli_query($connect,$sql)) {
-                    header("Location: accountPage.php");
+                
+                //executes the codes above
+                if($sql->execute()) {
+                    header("Location: accountPage.php");   // goes to accountPage
                     exit();
                 }
                 else {
-                    echo "query_error:".mysqli_error($connect);
+                    echo "query_error:".mysqli_error($connect);   //display error
                 }
                 $sql->close();
                 $connect->close();
@@ -240,16 +245,17 @@ if(isset($_POST['delAcct'])) {
             $stmt = $connect->prepare($sql);
             $stmt->bind_param("i", $delAcctId);
 
+            //executes the codes above
             if ($stmt->execute()) {
-                echo header('Location: tables.php');
+                echo header('Location: tables.php');   // goes to tables.php
                 exit();
             } else {
-                echo "Error: " . $stmt->error;
+                echo "Error: " . $stmt->error;    //display error
             }
             $stmt->close();
             $connect->close();
         } else {
-            $errorDelAcct['pin'] = "Incorrect Pin";
+            $errorDelAcct['pin'] = "Incorrect Pin";    //display an error if pin is incorrect
         }
     }
 
@@ -384,16 +390,17 @@ if(isset($_POST['updateAccount'])) {
         $stmt = $connect->prepare($sql);
         $stmt->bind_param("ssssi", $safeUpdateAcctName, $safeUpdateAcctUsername, $safeUpdateAcctEmail, $enc_password, $acctID);
 
+        //executes the prepared statement
         if ($stmt->execute()) {
-            echo header('Location: tables.php');
+            echo header('Location: tables.php');  //goes to tables.php
             exit();
         } else {
-            echo "Error: " . $stmt->error;
+            echo "Error: " . $stmt->error;  //display an error
         }
         $stmt->close();
         $connect->close();
     } else {
-        $errorUpdateAcct['pin'] = "Incorrect Pin";
+        $errorUpdateAcct['pin'] = "Incorrect Pin";  //display an error if pin is incorrect
     }
     }
 
@@ -417,20 +424,27 @@ $errorUpdateProd = array('updateProd' => '', 'updatePrice' => '', 'updateAvail' 
 //variables for adding and updating products
 $newProduct = $newPrice = $availability = $pin = $prodID = $productName = $prodPrice = $prodAvail = '';
 
-
+// Verification for adding data inside the products table
 if (isset($_POST['addProd'])) {
+
+    //if any input field is blank it will call again the floating form and spit out error informing that the input field should be filled
+    //else the values in the input field will be transferred to the designated variables
+
+    //Product Name
     if(empty($_POST['newProduct'])) {
         $errorProd['productName'] = "Don't leave this empty";
     } else {
         $newProduct = htmlspecialchars($_POST['newProduct']);
     }
 
+    //Price
     if(empty($_POST['newPrice'])) {
         $errorProd['price'] = "Don't leave this empty";
     } else {
         $newPrice = htmlspecialchars($_POST['newPrice']);
     }
 
+    //Availability
     if($_POST['availability'] == 'available' xor $_POST['availability'] == 'not-available') {
         $availability = htmlspecialchars($_POST['availability']);
     } else {
@@ -438,6 +452,8 @@ if (isset($_POST['addProd'])) {
     }
 
 
+    /*now if the the input fields are not empty it will enter another validation on which it will be tested on the regex combination
+      if it does not match the combinations of letters, numbers, symbols, or whitespaces. it will produce some error message/s   */
     if(!empty($newProduct) || !empty($newPrice) || !empty($availability)) {
         
         if(!preg_match('/(?:\s*\w+\s*)+/', $newProduct)) {
@@ -450,46 +466,58 @@ if (isset($_POST['addProd'])) {
         }
     }
 
+    //storing the value of four input tag for pin to a single variable
     $pin = htmlspecialchars($_POST['pin1']) . htmlspecialchars($_POST['pin2']) . htmlspecialchars($_POST['pin3']) . htmlspecialchars($_POST['pin4']);
+    
+    //executes if $pin is empty
     if(empty(htmlspecialchars($pin))) {
         $errorProd['pin'] = "Don't leave this empty";
-    } elseif (!preg_match('/^\d{4}$/', htmlspecialchars($pin))) {
+    } elseif (!preg_match('/^\d{4}$/', htmlspecialchars($pin))) {   //check if the pin is four numbers only
         $errorProd['pin'] = "Pin must be a 4-digit number";
     } else {
-        $safePin = mysqli_real_escape_string($connect, $pin);
+        $safePin = mysqli_real_escape_string($connect, $pin);  //safely storing the filtered pin to another variable
     }
 
-
+    // Checks if there are values stored in the array $errorProd
     if(array_filter($errorProd)) {
         echo '<script> alert("There are some errors in the form, couldn\'t proceed if NOT fixed!")
              newProd();
              </script>';
     } else {
-        #Second stage filtering
-
+        
+        #Filtration of data using mysqli filter syntax 
+        
+        //product name
         $safeNewProd = mysqli_real_escape_string($connect, $newProduct);
 
+        //price
         $safeNewPrice = mysqli_real_escape_string($connect, $newPrice);
 
+        //availability
         $safeAvailability = mysqli_real_escape_string($connect, $availability);
+        
 
+        //checks if the provided pin the pin of the admin account signed in is the same 
         if ($_SESSION['adminPin'] == $pin) {
 
+
+            //PHP prepared statement
             $sql = "INSERT INTO products (ProductName, price, availability) VALUE (?, ?, ?)";
             $stmt = $connect->prepare($sql);
             $stmt->bind_param("sds", $safeNewProd, $safeNewPrice, $safeAvailability);
 
+            //executes the prepared statement
             if ($stmt->execute()) {
-                header('Location: ../tables.php');
+                header('Location: ../tables.php');  //goes to tables.php
                 exit();
             } else {
-                echo "Error: " . $stmt->error;
+                echo "Error: " . $stmt->error;   //display an error
             }
 
             $stmt->close();
             $connect->close();
         } else {
-            $errorProd['pin'] = "Incorrect Pin";
+            $errorProd['pin'] = "Incorrect Pin";  //if pin is incorrect, displays an error
         }
 
     }
@@ -522,18 +550,22 @@ if(isset($_POST['updateProducts'])) {
     
     //if any input field is blank it will assign to the variables the original data that's inside the table
     //else the values in the input field will be transferred to the designated variables
+
+    //product name
     if(empty($_POST['updateProduct'])) {
         $productName = $data['ProductName'];
     } else {
         $productName = htmlspecialchars($_POST['updateProduct']);
     }
 
+    //price
     if(empty($_POST['updatePrice'])) {
         $prodPrice = $data['price'];
     } else {
         $prodPrice = htmlspecialchars($_POST['updatePrice']);
     }
 
+    //availability
     if(empty($_POST['updateAvail'])) {
         $prodAvail = $data['availability'];
     } else {
@@ -669,16 +701,17 @@ if(isset($_POST['delProd'])) {
             $stmt = $connect->prepare($sql);
             $stmt->bind_param("i", $delProdId);
 
+            //executes the codes above
             if ($stmt->execute()) {
-                echo header('Location: tables.php');
+                echo header('Location: tables.php');   // goes to tables.php
                 exit();
             } else {
-                echo "Error: " . $stmt->error;
+                echo "Error: " . $stmt->error;   //display error
             }
             $stmt->close();
             $connect->close();
         } else {
-            $errorUpdateProd['pin'] = "Incorrect Pin";
+            $errorUpdateProd['pin'] = "Incorrect Pin";   //display an error if pin is incorrect
         }
     }
 

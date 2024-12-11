@@ -24,6 +24,7 @@ include('cashierVerify.php');
         <div class="currentOrder">
             <div class="cardOrder">
                 <?php 
+                    //traversing to the first row inside the table orders where row is not served nor cancelled
                     $isServed = false;
                     $isCancelled = false;
                     $sql = "SELECT * FROM orders WHERE is_served = ? AND is_cancelled = ? LIMIT 1";
@@ -32,6 +33,8 @@ include('cashierVerify.php');
                     $stmt->execute();
                     $query = $stmt->get_result();
                     $res = $query->num_rows;
+
+                    //checking if the table is not empty
                     if($res > 0) {
                         $result = $query->fetch_assoc();
                         $_SESSION['currentId'] = $result['orderID'];
@@ -42,6 +45,8 @@ include('cashierVerify.php');
                         <div class="card-description">Description: <br><?php echo $result['description'] ?></div>
                 <?php }?>
             </div>
+
+            <!-- Action Button -->
             <form action="cashierPage.php" method="POST">
             <div class="button-div">
                 
@@ -54,14 +59,18 @@ include('cashierVerify.php');
             
         <div class="sideBar">
             <?php 
+                //traversing to the first Four rows ignoring the first row inside the table orders where rows is not served nor cancelled
                 $sql = "SELECT * FROM orders WHERE is_served = ? AND is_cancelled = ? LIMIT 1, 4";
                 $stmt = $connect->prepare($sql);
                 $stmt->bind_param("ii", $isServed, $isCancelled);
                 $stmt->execute();
                 $res = $stmt->get_result();
                 $row = $res->num_rows;
-                    
+                
+                //checking if the table is not empty
                 if ($row > 0) {
+
+                    //Loops through the rows of the table
                     while($data = $res->fetch_assoc()) :
                 ?>
                         <div class="cardProceed">

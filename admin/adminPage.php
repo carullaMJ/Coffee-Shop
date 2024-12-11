@@ -9,12 +9,15 @@
     <link rel="stylesheet" href="adminStyle.css">
     <title>Document</title>
 </head>
-<body style="background-color: #ECB176;">
+<body>
+    <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg navbar-dark" id="navigation">
             <div class="container-fluid">
-                <a href="#"><img id="logo" src="../images/Coffee Logo.png" alt=""></a>
-                <div id="dropdown">
-                    <button class="btn" style="" id="myDropdown"><img src="../images/AdminLogo.png" alt="" id="logo"></button>
+                <!-- navbar logo -->
+                <a href="adminPage.php"><img id="logo" src="../images/Coffee Logo.png" alt=""></a> 
+                <!-- dropdown -->
+                <div id="dropdown">   
+                    <button class="btn" id="myDropdown"><img src="../images/AdminLogo.png" alt="" id="logo"></button>
                     <div id="dropdown-content">
                         <a href="accountPage.php">Accounts</a>
                         <a href="tables.php">Tables</a>
