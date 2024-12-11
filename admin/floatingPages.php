@@ -1,6 +1,9 @@
 <?php
 include ('Credentials/Verify.php')
 ?>
+<!-- PRODUCTS -->
+
+
 <!-- ADD NEW PRODUCT -->
 <div class="product-overlay" id="prodOverlay">
     <div class="floating-form" id="floatingForm" style="width: 50rem; margin: auto;">
@@ -42,50 +45,6 @@ include ('Credentials/Verify.php')
     </div>
 </div>
 
-
-<!-- ADD NEW ORDER -->
-<div class="form-overlay" id="formOverlay">
-    <div class="floating-form" id="floatingForm" style="width: 50rem; margin: auto;">
-        <h3 class="card-title">New Order</h3>
-       
-        <form action="tables.php" method="post">
-
-        <input type="text" name="newUsername" placeholder="Product Name" value="<?php echo $newUsername; ?>" style="display: block; width: 96.5%;" required>
-            <div style="display: block; width: 96.5%;">
-                <p class="warning"><?php echo $errorMessage['username']; ?></p>
-            </div>
-            
-            <input type="number" name="firstName" placeholder="Price" value="<?php echo $firstName ?>" required>
-            <select name="availability" id="productAvailability">
-                <option value="available">Available</option>
-                <option value="notAvailable">Not-available</option>
-            </select>
-            <div>
-                <p class="warning"><?php echo $errorMessage['lastName'];?></p><!--Last Name-->
-            </div>
-            <div>
-                <p class="warning"><?php echo $errorMessage['position'];?></p><!--position-->
-            </div>
-            
-            <div class="pin" style="width: 96.5%; height: 120px;" id="pin">
-                <p class="label">Enter your pin here</p>
-                <p class="info">(confirm your pin to add product)</p>
-                <input type="password" class="pin-confirm" name="pin1" maxlength="1" autofocus>
-                <input type="password" class="pin-confirm" name="pin2" maxlength="1">
-                <input type="password" class="pin-confirm" name="pin3" maxlength="1">
-                <input type="password" class="pin-confirm" name="pin4" maxlength="1">
-                <div style="display: block; width: 96.5%; text-align: center;">
-                <p class="warning"><?php echo $errorMessage['username']; ?></p>
-            </div>
-            </div>
-            <button type="submit" name="add">Add</button>
-            <button name="cancel" onclick="toggleForm()">Cancel</button>
-        </form> 
-    </div>
-</div>
-
-
-<!-- PRODUCTS -->
 
 <!-- EDIT -->
 <div class="sliding-navbar products">

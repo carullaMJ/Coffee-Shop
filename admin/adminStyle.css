@@ -207,7 +207,7 @@ body, html {
     margin-bottom: 0px;
 }
 
-.form-overlay, .product-overlay, .productDel-overlay {
+.form-overlay, .product-overlay, .productDel-overlay, .accountDel-overlay {
     position: fixed;
     top: 0;
     left: 0;

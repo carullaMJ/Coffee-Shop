@@ -17,7 +17,7 @@ if (isset($_SESSION['çashierLogin'])) {
     <title>Log-In Page</title>
     
 </head>
-<body style="background-color: #ECB176;">
+<body>
 
     <!-- Navigation bar start -->
     <nav class="navbar navbar-expand-lg navbar-dark" id="navigation">

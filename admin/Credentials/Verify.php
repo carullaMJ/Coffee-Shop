@@ -1,11 +1,20 @@
 <?php 
 include('../dbcheck/dbCheck.php');
+
+//array for storing errors
 $errorMessage = array('username' => '', 'firstName' => '', 'lastName' => '', 'activeEmail' => '', 'newPassword' => '', 'confirmPassword' => '', 'position' => '', 'pin' => '' );
+
+//variables for storing the input data
 $newUsername = $firstName = $lastName = $name = $activeEmail = $newPassword = $confirmPassword = $position = '';
 $safeNewUsername = $safeNewPass = $safeActiveEmail = $safeLastName = $safeFirstName = '';
+
+    // Verification for adding the data inside the accounts table
     if (isset($_POST['add'])) {
 
-        //User Name
+        //if any input field is blank it will call again the floating form and spit out error informing that the input field should be filled
+        //else the values in the input field will be transferred to the designated variables
+
+        //Username
         if(empty($_POST['newUsername'])) {
             echo "<script>visible()</script>";
         }else {
@@ -50,6 +59,8 @@ $safeNewUsername = $safeNewPass = $safeActiveEmail = $safeLastName = $safeFirstN
         if($_POST['position'] == 'selectPosition') {
             echo "<script>visible()</script>";
             $errorMessage['position'] = 'Don\'t leave this blank';
+
+        //if the position selected is admin, it will traverse through all the data inside accounts table
         } elseif ($_POST['position'] == 'admin') {
                 $position = htmlspecialchars($_POST['position']);
                 $sql = "SELECT * FROM accounts WHERE position = ?";
@@ -58,7 +69,8 @@ $safeNewUsername = $safeNewPass = $safeActiveEmail = $safeLastName = $safeFirstN
                 $stmt->execute();
                 $query = $stmt->get_result();
                 $res = $query->num_rows;
-                $errorMessage['position'] = $res;
+
+                //when the traversal is done and founds a data, it will provide an error, stating that there is existing admin account hence can't create more
                 if($res > 0) {
                     $errorMessage['position'] = "There is already an admin account, can't create another";
                 } 
@@ -66,12 +78,8 @@ $safeNewUsername = $safeNewPass = $safeActiveEmail = $safeLastName = $safeFirstN
                 $position = htmlspecialchars($_POST['position']);
         }
             
-            
-
-        
-        
-    
-    
+        /*now if the the input fields are not empty it will enter another validation on which it will be tested on the regex combination
+      if it does not match the combinations of letters, numbers, symbols, or whitespaces. it will produce some error message/s   */
         if (!empty($firstName) || !empty($lastName) || !empty($activeEmail) || !empty($newPassword) || !empty($confirmPassword)) {
             if (!preg_match('/^[A-Za-z0-9_-]{3,20}$/', htmlspecialchars($newUsername))) {
                 $errorMessage['username'] = 'Enter a proper username';
@@ -166,7 +174,237 @@ $safeNewUsername = $safeNewPass = $safeActiveEmail = $safeLastName = $safeFirstN
                 $connect->close();
             }
         }
-    }    
+    } 
+
+
+
+    /* DELETE DATA FROM THE ACCOUNTS TABLE */
+
+//array to store the errors when inserting data from the input field
+$errorDelAcct = array ('pin' => '','acctId' => '' );
+//variable to store the product id
+$delAcctId = 0;
+
+//check if submit button to delete data is clicked
+if(isset($_POST['delAcct'])) {
+
+    //if the input field to find the id is empty, it will spit an error
+    if(empty($_POST['delRow'])) {
+        $errorDelAcct['pin'] = "Enter a row";
+    }
+    else {
+        
+        //if there is a selected id it will traverse to the data inside the table to find the specific id
+        $delAcctId = mysqli_real_escape_string($connect, $_POST['delRow']);
+        echo $delAcctId;
+
+        $sql = "SELECT * FROM accounts WHERE accountId = '$delAcctId'";
+        $query = mysqli_query($connect, $sql);
+        $result = mysqli_num_rows($query);
+        if ($result > 0) {
+            $data = mysqli_fetch_assoc($query);
+        }else {
+            //if the id isn't found it will spit an error that the id doesn't exist in the table
+            $errorDelAcct['acctId'] = "Row does not exists";
+        }
+       
+    }
+
+    //The confirmation pin will be concatinated into one value of course it will be filtered
+    $pin = htmlspecialchars($_POST['pin1']) . htmlspecialchars($_POST['pin2']) . htmlspecialchars($_POST['pin3']) . htmlspecialchars($_POST['pin4']);
+
+    //checks if the pin is empty
+    if(empty(htmlspecialchars($pin))) {
+        $errorDelAcct['pin'] = "Don't leave this empty";
+
+    //Pin must be composed of combination of 4-digit number
+    } elseif (!preg_match('/^\d{4}$/', htmlspecialchars($pin))) {
+        $errorDelAcct['pin'] = "Pin must be a 4-digit number";
+    } else {
+        $safePin = mysqli_real_escape_string($connect, $pin);
+    }
+
+    //if the array $errorDelProd have some values stored, it will alert that there are error/s still left and must be fixed to proceed
+    if(array_filter($errorDelAcct)) {
+        echo '<script> alert("There are some errors in the form, couldn\'t proceed if NOT fixed!")
+             delAcct();
+             </script>';
+    } else {
+
+        /*$_SESSION['adminPin'] is the pin of the admin logged in and if it matches the the pin entered for confirmation
+        it will finally update the data in the table with the data entered by the user */
+        if ($_SESSION['adminPin'] == $pin) {
+
+            //PHP prepared statement to pass the data to prevent from sql injection
+            $sql = "DELETE FROM accounts WHERE accountId = ?";
+            $stmt = $connect->prepare($sql);
+            $stmt->bind_param("i", $delAcctId);
+
+            if ($stmt->execute()) {
+                echo header('Location: tables.php');
+                exit();
+            } else {
+                echo "Error: " . $stmt->error;
+            }
+            $stmt->close();
+            $connect->close();
+        } else {
+            $errorDelAcct['pin'] = "Incorrect Pin";
+        }
+    }
+
+
+}
+
+
+
+
+    /* UPDATES ACCOUNTS TABLE */
+//array of error message on updating new product
+$errorUpdateAcct = array('updateAcctName' => '', 'updateAcctUsername' => '', 'updateAcctEmail' => '', 'updateAcctPass' => '', 'pin' => '', 'acctID' => '');
+
+//variables for adding and updating products
+$pin = $acctID = $updateAcctName = $updateAcctUsername = $updateEmail = $updateAcctPass = '';
+
+// Verification for updating the data inside the products table
+if(isset($_POST['updateAccount'])) {
+
+    //if there is no Id selected it spit an error to remind user to enter an id to proceed
+    if($_POST['updateAcctId'] == 'noId') {
+        $errorUpdateAcct['pin'] = "Enter ID";
+    }
+    else {
+        //if there is a selected id it will traverse to the data inside the table to find the specific id
+        $acctID = mysqli_real_escape_string($connect, $_POST['updateAcctId']);
+
+        $sql = "SELECT * FROM accounts WHERE accountId = '$acctID'";
+        $query = mysqli_query($connect, $sql);
+        $result = mysqli_num_rows($query);
+        if ($result > 0) {
+            $data = mysqli_fetch_assoc($query);
+        }else {
+            //if the id isn't found it will spit an error that the id doesn't exist in the table
+            $errorUpdateAcct['acctID'] = "ID does not exists";
+        }
+       
+    }
+    
+    //if any input field is blank it will assign to the variables the original data that's inside the table
+    //else the values in the input field will be transferred to the designated variables
+    if(empty($_POST['accountName'])) {
+        $updateAcctName = $data['name'];
+    } else {
+        $updateAcctName = htmlspecialchars($_POST['accountName']);
+    }
+
+    if(empty($_POST['accountUsername'])) {
+        $updateAcctUsername = $data['username'];
+    } else {
+        $updateAcctUsername = htmlspecialchars($_POST['accountUsername']);
+    }
+
+    if(empty($_POST['accountEmail'])) {
+        $updateEmail = $data['e_mail'];
+    } else {
+        $updateEmail = $_POST['accountEmail'];
+    }
+
+    if(!empty($_POST['accountPass'])) {
+        $updateAcctPass = $_POST['accountPass'];
+    }
+
+
+    /*now if the the input fields are not empty it will enter another validation on which it will be tested on the regex combination
+      if it does not match the combinations of letters, numbers, symbols, or whitespaces. it will produce some error message/s   */
+    if(!empty($updateAcctName) || !empty($updateAcctUsername) || !empty($updateEmail)) {
+        if(!preg_match('/(?:\s*\w+\s*)+/', $updateAcctName)) {
+            echo "<script>newProd()</script>";
+            $errorUpdateAcct['updateAcctName'] = "Enter a proper name";
+        }
+        if(!preg_match('/^[A-Za-z0-9_-]{3,20}$/', $updateAcctUsername)) {
+            echo "<script>newProd()</script>";
+            $errorUpdateAcct['updateAcctUsername'] = "Please specify you input";
+        }
+
+        if(!filter_var(htmlspecialchars($updateEmail), FILTER_VALIDATE_EMAIL)) {
+            $errorUpdateAcct['updateAcctEmail'] = 'Enter a valid email address';
+        }
+
+        
+    }
+    if(!empty($updateAcctPass)) {
+        if(!preg_match("/^[A-Za-z0-9!@#$%^&*()_+={}[\]|\\:;\"'<>,.?-]{8,}$/",$_POST['accountPass'])) {
+            $errorUpdateAcct['updateAcctPass'] = "Enter a proper password";
+        } else {
+            $updateAcctPass = mysqli_real_escape_string($connect, $_POST['accountPass']);
+        }
+    }
+
+
+    //The confirmation pin will be concatinated into one value of course it will be filtered
+    $pin = htmlspecialchars($_POST['pin1']) . htmlspecialchars($_POST['pin2']) . htmlspecialchars($_POST['pin3']) . htmlspecialchars($_POST['pin4']);
+
+    //checks if the pin is empty
+    if(empty(htmlspecialchars($pin))) {
+        $errorUpdateAcct['pin'] = "Don't leave this empty";
+
+    //Pin must be composed of combination of 4-digit number
+    } elseif (!preg_match('/^\d{4}$/', htmlspecialchars($pin))) {
+        $errorUpdateAcct['pin'] = "Pin must be a 4-digit number";
+    } else {
+        $safePin = mysqli_real_escape_string($connect, $pin);
+    }
+
+    //if the array $errorUpdateProd have some values stored, it will alert that there are error/s still left and must be fixed to proceed
+    if(array_filter($errorUpdateAcct)) {
+        echo '<script> alert("There are some errors in the form, couldn\'t proceed if NOT fixed!")
+             </script>';
+    } else {
+        //if there aren't any errors left, it will be filtered again and will be passed to another variables
+        if(!empty($_POST['accountPass'])) {
+            $enc_password = password_hash($updateAcctPass,PASSWORD_DEFAULT);
+        } else {
+            $updateAcctPass = $data['password'];
+        }
+
+        $safeUpdateAcctName = mysqli_real_escape_string($connect, $updateAcctName);
+
+        $safeUpdateAcctUsername = mysqli_real_escape_string($connect, $updateAcctUsername);
+
+        $safeUpdateAcctEmail = mysqli_real_escape_string($connect, $updateEmail);
+
+        
+
+    /*$_SESSION['adminPin'] is the pin of the admin logged in and if it matches the the pin entered for confirmation
+        it will finally update the data in the table with the data entered by the user */
+    if ($_SESSION['adminPin'] == $pin) {
+
+        //PHP prepared statement to pass the data to prevent from sql injection
+        $sql = "UPDATE accounts SET name = ?, username = ?, e_mail = ?, password = ? WHERE accountId = ?";
+        $stmt = $connect->prepare($sql);
+        $stmt->bind_param("ssssi", $safeUpdateAcctName, $safeUpdateAcctUsername, $safeUpdateAcctEmail, $enc_password, $acctID);
+
+        if ($stmt->execute()) {
+            echo header('Location: tables.php');
+            exit();
+        } else {
+            echo "Error: " . $stmt->error;
+        }
+        $stmt->close();
+        $connect->close();
+    } else {
+        $errorUpdateAcct['pin'] = "Incorrect Pin";
+    }
+    }
+
+
+}
+    
+    
+
+
+
+
 
 //NEW PRODUCT VERIFICATION
 

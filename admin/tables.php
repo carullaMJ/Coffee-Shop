@@ -153,22 +153,17 @@
             <nav class="navbar navbar-expand-lg">
                 <div class="container-fluid">
                     <p class="display-5">Orders</p>
-                    <button class="btn btn-lg" onclick="toggleForm()">New</button>
                 </div>
             </nav>
             <div>
-            <div class="update-delete">
-                <button class="toggle-btn btn btn-primary font-weight-bold mx-0 px-5 rounded">Edit</button></td>
-                <button class="btn btn-danger font-weight-bold mx-0 px-5 rounded">Delete</button></td>
-            </div>
                     <table class="table border border-1 border-light">
                         <thead>
                             <tr>
                                 <th class="text-white" scope="col">Order ID</th>
+                                <th class="text-white" scope="col">Customer Name</th>
                                 <th class="text-white" scope="col">Quantity</th>
-                                <th class="text-white" scope="col">Amount</th>
-                                <th class="text-white" scope="col">Payment</th>
-                                <th class="text-white" scope="col">Change</th>
+                                <th class="text-white" scope="col">Ordered</th>
+                                <th class="text-white" scope="col">Status</th>
                                 <th class="text-white" scope="col">Date Ordered</th>
                                 </tr>
                         </thead>
@@ -189,10 +184,10 @@
                                 ?>
                                     <tr>
                                         <th class="text-muted" scope="row"><?php echo $data['orderID'] ?></th>
+                                        <td class="text-muted"><?php echo $data['customer_name'] ?></td>
                                         <td class="text-muted"><?php echo $data['quantity'] ?></td>
-                                        <td class="text-muted"><?php echo $data['totalAmount'] ?></td>
-                                        <td class="text-muted"><?php echo $data['payment'] ?></td>
-                                        <td class="text-muted"><?php echo $data['changes'] ?></td>
+                                        <td class="text-muted"><?php echo $data['productName'] ?></td>
+                                        <td class="text-muted"><?php if($data['is_served']) {echo 'served';}elseif($data['is_cancelled']) {echo 'cancelled';}else {echo 'on CUE';} ?></td>
                                         <td class="text-muted"><?php echo $data['date_created'] ?></td>
                                         
                                     </tr>
@@ -214,7 +209,6 @@
 
         <div>
         <?php 
-        include('Credentials/updateAcct.php');
         include('floatingPages.php');
         include('Credentials/Verify.php');
         ?>

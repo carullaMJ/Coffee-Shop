@@ -97,3 +97,17 @@
             var form = document.getElementById('prodDelOverlay');
             form.style.display = 'block';
         }
+
+        function gotoIndex() {
+            window.location.href = "../logout.php";
+        }
+
+        function toggleDelAcct() {
+            var form = document.getElementById('acctDelOverlay');
+            form.style.display = (form.style.display === 'none' || form.style.display === '') ? 'block' : 'none';
+
+        }
+        function delAcct() {
+            var form = document.getElementById('acctDelOverlay');
+            form.style.display = 'block';
+        }

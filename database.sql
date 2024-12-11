@@ -30,32 +30,20 @@ CREATE TABLE products (
     productID int Primary key AUTO_INCREMENT,
     ProductName varchar(100),
     price numeric,
-    availability boolean,
+    availability varchar(16),
     date_created TIMESTAMP
 );
 
 --Order table
 CREATE TABLE orders (
-    orderID int Primary key AUTO_INCREMENT,
+   orderID int Primary key AUTO_INCREMENT,
+    customer_name varchar(50),
     quantity int,
-    totalAmount numeric,
-    payment numeric,
-    changes numeric,
-    date_created TIMESTAMP
-);
-
---Customer table
-CREATE TABLE customers (
-    customerID int Primary key AUTO_INCREMENT,
-    name varchar(100),
+    productID int,
+    productName varchar(100),
     description varchar(100),
+    is_served boolean,
+    is_cancelled boolean,
+    Foreign key(productID) references products(productID),
     date_created TIMESTAMP
-);
-
---Delete Logs table
-CREATE TABLE delete_log (
-    del_logID int Primary key AUTO_INCREMENT,
-    tableName varchar(50),
-    id int,
-    date_deleted TIMESTAMP
-);
+); 

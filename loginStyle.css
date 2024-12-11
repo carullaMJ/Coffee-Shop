@@ -1,3 +1,7 @@
+body {
+    background-color: #ECB176;
+}
+
 #navigation {
     border-bottom-right-radius: 10;
     background-color: #6F4E37;
@@ -111,4 +115,113 @@
 
 #firstForm {
     display: block;
+}
+
+/* CASHIER */
+
+.main {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    height: 92.8vh;
+
+}
+
+.currentOrder {
+    width: 80%;
+    height: 100%;
+    border-radius: 20px;
+}
+
+.sideBar {
+    width: 20%;
+    height: 100%;
+    background-color: #6F4E37;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.cardOrder {
+    width: 70%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    background-color: #FED8B1;
+    padding: 20px;
+    color: #53321C;
+    margin: auto;
+    margin-top: 2%;
+    border-radius: 20px;
+    height: 80%;
+    font-family: 'brush script mt';
+}
+.cardOrder img, h1, h3{
+    margin: auto;
+}
+.cardOrder h3 {
+    font-family: 'Courier New', Courier, monospace;
+}
+.cardOrder img {
+    width: 20%;
+}
+.cardOrder h1{
+    font-size: 80px;
+}
+.card-description {
+    border: 1px solid black;
+    margin: auto;
+    border-radius: 15px;
+    padding: 10px;
+    text-align: center;
+    width: 70%;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.button-div {
+    margin-top: 50px;
+    width: 70%;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    background-color: #53321C;
+    padding: 30px;
+    padding-top: 10px;
+    position: fixed;
+    bottom: 0;
+    margin-left: 5%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.btn {
+    background-color: #6F4E37;
+    color: #f1f1f1;
+    width: 20ch;
+    font-family: Arial;
+    font-weight: bolder;
+}
+
+.cardProceed {
+    width: 80%;
+    background-color: #FED8B1;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    border-radius: 10px;
+    gap: 10px;
+    padding: 10px;
+    color: #53321C;
+    font-family: 'brush script mt';
+}
+
+.cardProceed img {
+    width: 20%;
+}
+.cardProceed img, h2, h4 {
+    margin: auto;
+}
+.cardProceed h4 {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 15px;
 }

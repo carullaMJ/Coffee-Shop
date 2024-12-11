@@ -1,4 +1,5 @@
 <?php
+    session_start();
     include('../dbcheck/dbCheck.php');
 ?>
 <!DOCTYPE html>
@@ -36,7 +37,7 @@
             <div>
             <div class="update-delete">
                 <button class="toggle-btn btn btn-primary font-weight-bold mx-0 px-5 rounded">Edit</button></td>
-                <button class="btn btn-danger font-weight-bold mx-0 px-5 rounded">Delete</button></td>
+                <button class="btn btn-danger font-weight-bold mx-0 px-5 rounded" onclick="toggleDelAcct()">Delete</button></td>
             </div>
                     <table class="table border border-1 border-light">
                         <thead>
@@ -44,6 +45,7 @@
                                 <th class="text-white" scope="col">Account ID</th>
                                 <th class="text-white" scope="col">Name</th>
                                 <th class="text-white" scope="col">Username</th>
+                                <th class="text-white" scope="col">E-mail</th>
                                 <th class="text-white" scope="col">Position</th>
                                 <th class="text-white" scope="col">Date Created</th>
                                 <th class="text-white" scope="col" colspan="2"></th>
@@ -69,6 +71,7 @@
                                         <th class="text-muted" scope="row" id="<?php echo 'accountId'.$i?>"><?php echo $data['accountId'] ?></th>
                                         <td class="text-muted"><?php echo $data['name'] ?></td>
                                         <td class="text-muted"><?php echo $data['username'] ?></td>
+                                        <td class="text-muted"><?php echo $data['e_mail'] ?></td>
                                         <td class="text-muted"><?php echo $data['position'] ?></td>
                                         <td class="text-muted"><?php echo $data['date_created'] ?></td>
                                         
@@ -80,7 +83,6 @@
                         </tbody>
                     </table>
             </div>
-            <?php include('Credentials/updateAcct.php'); ?>
 
             
             
@@ -100,22 +102,36 @@
     <div class="sliding-navbar">
         <form action="accountPage.php" method="post">
     <div class="nav-input">
+        <p style="text-align: center;"><i>--Leaving the area blank means no changes will be made and will retain it's original value--</i></p>
         <div>
             <h4 style="font-weight: bolder;">UPDATE <i>table_name</i></h4>
         </div>
-        
+        <div class="errors">
+            <div>
+                <p><?php echo $errorUpdateAcct['updateAcctName'] ?></p>
+            </div>
+            <div>
+                <p><?php echo $errorUpdateAcct['updateAcctUsername'] ?></p>
+            </div>
+            <div>
+                <p><?php echo $errorUpdateAcct['updateAcctEmail'] ?></p>
+            </div>
+            <div>
+                <p><?php echo $errorUpdateAcct['updateAcctPass'] ?></p>
+            </div>
+        </div>
         <div class="selectColumn">
         <h4 style="margin-right: 40px; font-weight: bolder;">SET</h4>
             <div class="tableColumn"><h4 for="checkboxName">Name = </h4><input type="text" name="accountName" class="changeVal"></div>
             <div class="tableColumn"><h4 for="checkboxUsername">Username = </h4><input type="text" name="accountUsername" class="changeVal"></div>
             <div class="tableColumn"><h4 for="checkboxEmail">Email = </h4><input type="text" name="accountEmail" class="changeVal"></div>
-            <div class="tableColumn"><h4 for="checkboxPass">Password = </h4><input type="text" name="accountPass" class="changeVal"></div>
+            <div class="tableColumn"><h4 for="checkboxPass">Password = </h4><input type="password" name="accountPass" class="changeVal"></div>
             
         </div>
         <div class="selectId">
         <h4 style="margin-right: 40px; font-weight: bolder;">WHERE</h4>
         <h4>Account ID =</h4>
-        <select class="idSelector" name="updateId">
+        <select class="idSelector" name="updateAcctId">
             <option value="noId"></option>
             <?php 
                 $sql = "SELECT * FROM accounts";
@@ -130,15 +146,77 @@
                 }
             ?>  
             </select>
+            <div>
+                <p><?php echo $errorUpdateAcct['acctID'] ?></p>
+            </div>
         </div>
+        <div class="admin-pin" id="pinAdmin">
+                    <p><i>--Enter your pin to confirm changes--</i></p>
+                    <!-- 4-Digit Pin -->
+                        <input type="password" class="pin-confirm" name="pin1" maxlength="1" autofocus>
+                        <input type="password" class="pin-confirm" name="pin2" maxlength="1" >
+                        <input type="password" class="pin-confirm" name="pin3" maxlength="1" >
+                        <input type="password" class="pin-confirm" name="pin4" maxlength="1">
+                    </div>
+                    <div>
+                        <p><?php echo $errorUpdateAcct['pin'] ?></p>
+                    </div>
         <div class="submitUpdate">
-            <button type="submit" name="update">UPDATE</button>
+            <button type="submit" name="updateAccount">UPDATE</button>
         </div>
         
     </div>
-        <button class="close-btn">Close</button>
+        <button class="close-btn" onclick="closeButton()">&#10005;</button>
     </div>
     </form>
+
+<!-- DELETE -->
+<div class="accountDel-overlay" id="acctDelOverlay">
+    <div class="floating-form" id="floatingForm" style="width: 50rem; margin: auto;">
+        <h3 class="card-title">Delete Account</h3>
+       
+        <form action="accountPage.php" method="post">
+            
+            <select name="delRow" id="productAvailability" style="width: 96.5%;">
+                <option value="blank">Select Row</option>
+                <?php 
+                    $position = 'cashier';
+                    $sql = "SELECT * FROM accounts WHERE position = ?";
+                    $stmt = $connect->prepare($sql);
+                    $stmt->bind_param("s", $position);
+                    $stmt->execute();
+                    $query = $stmt->get_result();
+                    $res = $query->num_rows;
+                    
+                    if($res > 0) {
+                        while ($data = mysqli_fetch_assoc($query)) : ?>
+                    <option value="<?php echo $data['accountId'] ?>"><?php echo $data['accountId']." ".$data['username']." ".$data['name'] ?></option>  
+                <?php
+                endwhile;
+                    }
+                ?> 
+            </select>
+            <div style="width: 96.5%;">
+                <p class="warning"><?php echo $errorProd['availability'];?></p><!--position-->
+            </div>
+            
+            <div class="pin" style="width: 96.5%; height: 120px;" id="pin">
+                <p class="label">Enter your pin here</p>
+                <p class="info">(confirm your pin to delete account)</p>
+                <input type="password" class="pin-confirm" name="pin1" maxlength="1" autofocus>
+                <input type="password" class="pin-confirm" name="pin2" maxlength="1">
+                <input type="password" class="pin-confirm" name="pin3" maxlength="1">
+                <input type="password" class="pin-confirm" name="pin4" maxlength="1">
+                <div style="display: block; width: 96.5%; text-align: center;">
+                <p class="warning"><?php echo $errorProd['pin']; ?></p>
+            </div>
+            </div>
+            <button type="submit" name="delAcct">DELETE</button>
+            <button name="cancel" onclick="toggleDelAcct()">Cancel</button>
+        </form> 
+    </div>
+</div>
+
 
     <script src="../JS/script.js"></script>
 
@@ -164,10 +242,25 @@
             bottom.style.marginBottom = '-50%';
         });
 
+        const inputPin = document.querySelectorAll('.pin-confirm');
+
+        inputPin.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+                if (input.value.length === 1 && index < inputPin.length - 1) {
+                    inputPin[index + 1].focus(); // Move to the next input
+                    }
+                });
+
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && index > 0 && !input.value) {
+                    inputPin[index - 1].focus(); // Move back to the previous input
+                    }
+                });
+        });
+
     </script>
     <?php 
         include('Credentials/Verify.php');
-        include('Credentials/updateAcct.php');
 ?>
 </body>
 </html>
